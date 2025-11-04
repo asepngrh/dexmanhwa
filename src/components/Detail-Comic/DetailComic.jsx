@@ -10,17 +10,16 @@ const DetailComic = () => {
     const [comicDetail, setComicDetail] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [history, setHistory] = useState(null)
 
     useEffect(() => {
         const fetchComicDetail = async () => {
             try {
-                // Pastikan processedLink tidak memiliki slash di awal
                 const cleanProcessedLink = processedLink?.startsWith('/') ? processedLink.substring(1) : processedLink
                 
                 const response = await axios.get(`https://www.sankavollerei.com/comic/comic/${cleanProcessedLink}`)
                 console.log("Fetched comic detail:", response.data)
 
-                // Jika tidak ada data, gunakan fallback
                 if (!response.data) {
                     throw new Error('Tidak ada data komik yang ditemukan')
                 }
@@ -29,11 +28,8 @@ const DetailComic = () => {
                 setLoading(false)
             } catch (err) {
                 console.error("Error fetching comic detail:", err)
-                // Tampilkan pesan error yang lebih informatif
                 setError(err.response?.data?.message || err.message || 'Terjadi kesalahan saat mengambil detail komik')
                 setLoading(false)
-                
-                // Set default comic detail jika diperlukan
                 setComicDetail({
                     synopsis: "Synopsis tidak tersedia.",
                     chapters: [],
@@ -48,22 +44,31 @@ const DetailComic = () => {
             setError('Link komik tidak valid')
             setLoading(false)
         }
-    }, [processedLink])
 
-    // Loading state
+        const loadHistory = () => {
+            try {
+                const historyData = JSON.parse(localStorage.getItem('comicHistory'))
+                if (historyData && historyData[slug]) {
+                    setHistory(historyData[slug])
+                }
+            } catch (e) {
+                console.error("Error loading history from local storage", e)
+            }
+        }
+        loadHistory()
+        
+    }, [processedLink, slug])
+
     if (loading) {
         return (
-            // === MODIFIKASI TEMA GELAP: Loading State ===
             <div className="bg-[#121212] flex justify-center items-center h-screen">
                 <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
             </div>
         )
     }
 
-    // Error state
     if (error) {
         return (
-            // === MODIFIKASI TEMA GELAP: Error State ===
             <div className="bg-[#121212] min-h-screen text-center text-red-400 p-4 pt-10">
                 <h2>Terjadi Kesalahan</h2>
                 <p>{error.message}</p>
@@ -71,33 +76,45 @@ const DetailComic = () => {
         )
     }
 
-    // Jika tidak ada komik
     if (!comic) {
-        // === MODIFIKASI TEMA GELAP: No Comic State ===
         return <div className="bg-[#121212] min-h-screen text-gray-100 text-center pt-10">Komik tidak ditemukan</div>
     }
 
-    // New function to handle reading the comic
-    const handleReadComic = () => {
-    if (comicDetail?.chapters && comicDetail.chapters.length > 0) {
-        const firstChapter = comicDetail.chapters[0]
+    const handleReadComic = (chapterData = null) => {
+        let chapterToRead;
+
+        if (chapterData) {
+            chapterToRead = chapterData;
+        } else if (comicDetail?.chapters && comicDetail.chapters.length > 0) {
+            chapterToRead = comicDetail.chapters[0];
+        } else {
+            alert('No chapters available');
+            return;
+        }
         
-        navigate(`/read-comic/${slug}/chapter-${firstChapter.chapter}`, { 
+        navigate(`/read-comic/${slug}/chapter-${chapterToRead.chapter}`, { 
             state: { 
-                chapterLink: firstChapter.link,
+                chapterLink: chapterToRead.link,
                 comicTitle: comic.title,
-                chapterNumber: firstChapter.chapter,
-                // === FIX NAVIGASI: Menyimpan state detail untuk kembali ===
+                chapterNumber: chapterToRead.chapter,
                 comicDetailState: { comic: comic, processedLink: processedLink }, 
             } 
         })
-    } else {
-        alert('No chapters available')
     }
-}
+
+    const handleContinueReading = () => {
+        if (history) {
+            const chapterData = {
+                link: history.lastChapterLink,
+                chapter: history.lastChapter,
+            }
+            handleReadComic(chapterData)
+        }
+    }
+
+    const isLatestChapter = history?.lastChapter === comic.chapter;
 
     return (
-        // === MODIFIKASI TEMA GELAP: Main Wrapper ===
         <div className="bg-[#121212] min-h-screen text-gray-100 py-6">
             <div className="container mx-auto p-6">
                 <div className="flex flex-col md:flex-row">
@@ -122,44 +139,60 @@ const DetailComic = () => {
                             </p>
                         </div>
 
+                        {history && !isLatestChapter && (
+                            <div className="mb-6 p-4 bg-[#1E1E1E] border border-indigo-700 rounded-lg shadow-md">
+                                <p className="font-semibold text-white">
+                                    Lanjutkan Membaca
+                                </p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                    Chapter Terakhir Dibaca: <span className="text-indigo-400">Chapter {history.lastChapter}</span>
+                                </p>
+                                <button
+                                    onClick={handleContinueReading}
+                                    className="mt-3 bg-indigo-700 text-white px-4 py-2 rounded hover:bg-indigo-600 transition text-sm"
+                                >
+                                    Lanjutkan Chapter {history.lastChapter}
+                                </button>
+                            </div>
+                        )}
+
                         {/* Daftar Chapter */}
                         <div className="mt-6">
                             <h3 className="text-xl font-semibold mb-3">Daftar Chapter</h3>
                             <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                                {comicDetail?.chapters?.map((chapter, index) => (
-        <button
-            key={index}
-            onClick={() => navigate(`/read-comic/${slug}/chapter-${chapter.chapter}`, { 
-                state: { 
-                    chapterLink: chapter.link,
-                    comicTitle: comic.title,
-                    chapterNumber: chapter.chapter,
-                    // === FIX NAVIGASI: Menyimpan state detail untuk kembali ===
-                    comicDetailState: { comic: comic, processedLink: processedLink }
-                } 
-            })}
-            // === MODIFIKASI TEMA GELAP: Tombol Chapter ===
-            className="bg-indigo-700 hover:bg-indigo-600 p-2 rounded text-center text-sm text-white"
-        >
-            {chapter.chapter}
-        </button>
-    ))}
+                                    <button
+                                        key={index}
+                                        onClick={() => handleReadComic(chapter)}
+                                        className={`p-2 rounded text-center text-sm transition ${
+                                            String(chapter.chapter) === String(history?.lastChapter)
+                                                ? 'bg-yellow-600 text-white font-bold'
+                                                : 'bg-indigo-700 hover:bg-indigo-600 text-white'
+                                        }`}
+                                    >
+                                        {chapter.chapter}
+                                    </button>
+                                ))}
                             </div>
                         </div>
 
                         <div className="flex space-x-4 mt-6">
                             <button
-                                onClick={handleReadComic}
-                                // === MODIFIKASI TEMA GELAP: Tombol Baca ===
+                                onClick={() => handleReadComic()}
                                 className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
                             >
-                                Baca
+                                Baca Dari Awal
                             </button>
-
+                            
+                            <button
+                                onClick={() => navigate('/')}
+                                className="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-600 transition"
+                            >
+                                Home
+                            </button>
+                            
                             <div className="flex items-center space-x-2">
-                                {/* === MODIFIKASI TEMA GELAP: Teks Sumber === */}
                                 <span className="text-gray-400">Sumber:</span>
-                                {/* === MODIFIKASI TEMA GELAP: Tag Sumber === */}
                                 <span className="bg-blue-800 text-white px-2 py-1 rounded text-sm">
                                     {comicDetail?.creator || "Unknown"}
                                 </span>
