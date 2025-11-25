@@ -21,7 +21,7 @@ const app = express();
 const allowedOrigins = [
   'http://45.127.34.136:5173',
   'https://backend-comic.antidonasi.web.id',
-  'https://comic.antidonasi.web.id'
+  'https://juju-manhwa-2-0.vercel.app'
 ];
 
 app.use(cors({

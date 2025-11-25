@@ -30,7 +30,7 @@ start() {
     print_info "Starting containers..."
     docker compose up -d
     print_success "Containers started!"
-    print_info "Frontend: https://comic.antidonasi.web.id/"
+    print_info "Frontend: https://juju-manhwa-2-0.vercel.app/"
     print_info "Backend API: https://backend-comic.antidonasi.web.id/"
 }
 
@@ -56,7 +56,7 @@ rebuild() {
     print_info "Rebuilding and restarting containers..."
     docker compose up -d --build
     print_success "Rebuild complete!"
-    print_info "Frontend: https://comic.antidonasi.web.id/"
+    print_info "Frontend: https://juju-manhwa-2-0.vercel.app/"
     print_info "Backend API: https://backend-comic.antidonasi.web.id/"
 }
 
@@ -101,7 +101,7 @@ shell() {
 
 health() {
     print_info "Checking backend health..."
-    curl -s https://comic.antidonasi.web.id | jq . || curl -s https://comic.antidonasi.web.id
+    curl -s https://juju-manhwa-2-0.vercel.app | jq . || curl -s https://juju-manhwa-2-0.vercel.app
 }
 
 # Main

@@ -9,7 +9,7 @@ const TrendingPage = () => {
                 title="Komik Trending"
                 description="Komik paling populer dan trending saat ini. Temukan komik favorit yang paling banyak dibaca di Kanata-Toon."
                 keywords="komik trending, komik populer, komik hits, komik viral"
-                url="https://comic.antidonasi.web.id/trending"
+                url="https://juju-manhwa-2-0.vercel.app/trending"
             />
             <div className="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-[#0a0a0a] dark:via-[#121212] dark:to-[#1a1a1a] min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
             {/* Background decorative elements */}

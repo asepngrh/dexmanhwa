@@ -58,7 +58,7 @@ const HistoryPage = () => {
             <SEO
                 title="Riwayat Bacaan"
                 description="Daftar komik yang pernah Anda baca di Kanata-Toon."
-                url="https://comic.antidonasi.web.id/history"
+                url="https://juju-manhwa-2-0.vercel.app/history"
             />
             <div className="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-[#0a0a0a] dark:via-[#121212] dark:to-[#1a1a1a] min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
                 <div className="fixed inset-0 overflow-hidden pointer-events-none">

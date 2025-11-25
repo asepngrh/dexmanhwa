@@ -6,6 +6,7 @@ import Home from './Pages/Home'
 import TerbaruPage from './Pages/TerbaruPage'
 import TrendingPage from './Pages/TrendingPage'
 import PustakaPage from './Pages/PustakaPage'
+import UnlimitedPage from './Pages/UnlimitedPage'
 import DetailComic from './Pages/page-detail'
 import ReadComic from './Pages/read-comic'
 import StatisticsPage from './Pages/StatisticsPage'
@@ -25,6 +26,7 @@ function AppContent() {
         <Route path="/trending" element={<TrendingPage />} />
         <Route path="/pustaka" element={<PustakaPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/unlimited" element={<UnlimitedPage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/detail-comic/:slug" element={<DetailComic />} />
         <Route path="/read-comic/:slug/:chapterSlug" element={<ReadComic />} />

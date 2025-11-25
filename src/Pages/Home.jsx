@@ -14,7 +14,7 @@ const Home = () => {
         title="Kanata-Toon - Baca Komik Gratis Bahasa Indonesia Terbaru"
         description="Baca komik online gratis di Kanata-Toon. Koleksi lengkap komik terbaru, trending, dan populer dalam bahasa Indonesia. Update setiap hari!"
         keywords="komik indonesia, baca komik gratis, komik online, manga indonesia, manhwa indonesia"
-        url="https://comic.antidonasi.web.id/"
+        url="https://juju-manhwa-2-0.vercel.app/"
       />
       <div className="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-[#0a0a0a] dark:via-[#121212] dark:to-[#1a1a1a] min-h-screen text-gray-900 dark:text-gray-100 transition-colors">
       {/* Background decorative elements */}
